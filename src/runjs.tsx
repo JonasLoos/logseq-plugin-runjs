@@ -8,10 +8,8 @@ async function getBlockFromContent(content: string): any {
   blocks.push(...tree);
   while (blocks.length) {
     const block = blocks.pop();
-    if (block) {
-      if (block.content == content) return block;
-      blocks.push(...block.children);
-    }
+    if (block.content.trim().slice("```\nrunjs".length,-"```".length) == content) return block;
+    blocks.push(...block.children);
   }
   throw new Error('Block not found');
 }
@@ -28,8 +26,11 @@ export default function (props: { content: string }) {
       elRef.current.textContent = text;
     };
     const replaceBlock = async (text) => {
-      const uuid = await getBlockFromContent(content).uuid;
-      logseq.Editor.updateBlock(uuid, text);
+      // replace the current block with the given text if we are not on a template page
+      logseq.Editor.getCurrentPage().then(page => {
+        if (page.name.trim().toLowerCase().startsWith("template"))
+          getBlockFromContent(content).then(block=>logseq.Editor.updateBlock(block.uuid,text));
+      })
     };
 
     setTimeout(() => {
