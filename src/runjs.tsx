@@ -5,6 +5,7 @@ async function getBlockFromContent(content: string): any {
   // go though all blocks on the page until a block with the given content is found
   const blocks = [];
   const tree = await logseq.Editor.getCurrentPageBlocksTree();
+  if (!tree) throw new Error('Page not found')
   blocks.push(...tree);
   while (blocks.length) {
     const block = blocks.pop();
@@ -30,7 +31,9 @@ export default function (props: { content: string }) {
       logseq.Editor.getCurrentPage().then(page => {
         if (!(page && page.name && page.name.trim().toLowerCase().startsWith("template")))
           // TODO: this doesn't work reliably if multiple blocks are equal
-          getBlockFromContent(content).then(block => logseq.Editor.updateBlock(block.uuid,text));
+          getBlockFromContent(content)
+            .then(block => logseq.Editor.updateBlock(block.uuid,text))
+            .catch(error => setOutput('Error replacing block: ' + error));
         else
           setOutput(`This block will be replaced when the template is applied.`);
       })
