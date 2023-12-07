@@ -12,7 +12,7 @@ export default function (props: { content: string, uuid: string }) {
       // TODO(meain): allow to do more than just text
       elRef.current.textContent = text;
     };
-    const replaceOutput = (text) => {
+    const replaceBlock = (text) => {
       logseq.Editor.updateBlock(uuid, text)
     }
 
