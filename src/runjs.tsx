@@ -25,7 +25,7 @@ export default function (props: { content: string }) {
       // TODO(meain): allow to do more than just text
       elRef.current.textContent = text;
     };
-    const replaceBlock = async (text) => {
+    const replaceBlock = (text) => {
       // replace the current block with the given text if we are not on a template page
       logseq.Editor.getCurrentPage().then(page => {
         if (page.name.trim().toLowerCase().startsWith("template"))
