@@ -1,8 +1,8 @@
 import "@logseq/libs";
 import React from "react";
 
-export default function (props: { content: string }) {
-  const { content } = props;
+export default function (props: { content: string, uuid: string }) {
+  const { content, uuid } = props;
   const elRef = React.useRef(null);
   const [evalOutput, setEvalOutput] = React.useState("");
 
@@ -12,6 +12,9 @@ export default function (props: { content: string }) {
       // TODO(meain): allow to do more than just text
       elRef.current.textContent = text;
     };
+    const replaceOutput = (text) => {
+      logseq.Editor.updateBlock(uuid, text)
+    }
 
     setTimeout(() => {
       // Have to put this in a timeout or LogSeq freaks out
