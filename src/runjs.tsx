@@ -28,8 +28,11 @@ export default function (props: { content: string }) {
     const replaceBlock = (text) => {
       // replace the current block with the given text if we are not on a template page
       logseq.Editor.getCurrentPage().then(page => {
-        if (page.name.trim().toLowerCase().startsWith("template"))
-          getBlockFromContent(content).then(block=>logseq.Editor.updateBlock(block.uuid,text));
+        if (!(page && page.name && page.name.trim().toLowerCase().startsWith("template")))
+          // TODO: this doesn't work reliably if multiple blocks are equal
+          getBlockFromContent(content).then(block => logseq.Editor.updateBlock(block.uuid,text));
+        else
+          setOutput(`This block will be replaced when the template is applied.`);
       })
     };
 
